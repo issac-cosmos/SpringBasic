@@ -46,6 +46,16 @@ public class MemberService {
         memberRepository.save(memberCreateDto.toEntity());
     }
 
+    public Member save2(MemberCreateDto memberCreateDto) throws IllegalArgumentException{
+        if(memberRepository.findByEmail(memberCreateDto.getEmail()).isPresent()){
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
+        if(memberCreateDto.getPassword().length()<8){
+            throw new IllegalArgumentException("비밀번호가 짧습니다.");
+        }
+        Member member = memberRepository.save(memberCreateDto.toEntity());
+        return member;
+    }
     public MemberDetailDto findById(Long id) throws NoSuchElementException,RuntimeException{
 //        Optional<Member> optionalMember = memberMemoryRepository.findById(id);
 //        Member member = optionalMember.orElseThrow(()->new NoSuchElementException("없는 ID입니다."));
@@ -53,7 +63,7 @@ public class MemberService {
 //        return dto;
 //        밑 코드로 한줄로 줄일수있음.
         return memberRepository.findById(id)
-                .orElseThrow(()->new NoSuchElementException("없는 ID입니다.")).detailFromEntity();
+                .orElseThrow(()->new EntityNotFoundException("없는 ID입니다.")).detailFromEntity();
     }
 
     public void updatePw(MemberUpdateDto memberUpdateDto){
@@ -62,5 +72,10 @@ public class MemberService {
         member.updatePw(memberUpdateDto.getNewPassword());
 //        기존객체를 조회후에 다시 save할경우에는 insert가 아니라 update 쿼리 실행
         memberRepository.save(member);
+    }
+    public void delete(Long id){
+//        memberRepository.deleteById(id);
+        Member member = memberRepository.findById(id).orElseThrow(()->new EntityNotFoundException("없는 객체 입니다."));
+        memberRepository.delete(member);
     }
 }
