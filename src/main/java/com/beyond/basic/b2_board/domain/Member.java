@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 //JPA의 엔티티 매니저에게 객체를 위임하려면 @Entity어노테이션 필요
 @Entity
-public class Member {
+public class Member extends BaseTimeEntity{
     @Id//pk설정
 //    identity : auto_increment설정(AUTO 설정은 jpa에게 적절한 전략을 위임하는것)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +27,7 @@ public class Member {
 //    @Column(name = "pw") 이렇게 할수는 있으나, 되도록이면 컬럼명과 변수명을 일치시키는 것이 개발의 혼선을 줄일수있음.
     private String password;
 //    java에서 캐멀케이스 사용시 db에는 created_time으로 컬럼변환
-    @CreationTimestamp
-    private LocalDateTime createdTime;
-    @UpdateTimestamp
-    private LocalDateTime updateTime;
+
 
     public Member(String name , String email, String password){
         this.name=name;
